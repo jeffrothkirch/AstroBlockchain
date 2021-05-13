@@ -127,7 +127,7 @@ class Blockchain {
                 reject('Signature not valid');
             }
 
-            let newBlock = new BlockClass.Block({star: star, ownner: address});
+            let newBlock = new BlockClass.Block({star: star, owner: address});
             let addedBlock = await self._addBlock(newBlock);
             resolve(addedBlock);            
         });

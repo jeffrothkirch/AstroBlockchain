@@ -78,11 +78,10 @@ class Block {
 
         if (data && this.height > 0)
         {
-            return data;
+            return decodedData;
         }
 
-        // Resolve with the data if the object isn't the Genesis block
-
+        return null;
     }
 
 }
