@@ -75,9 +75,11 @@ class Blockchain {
             }
 
             self.chain.push(newBlock);
-            self.height = self.chain.length -1;            
+            self.height = self.chain.length -1;
+            //self.validateChain().then(() => resolve(block)).catch(() => reject('Unable to validate the blockchain.'));
+            await self.validateChain();            
             resolve(newBlock);           
-        });
+        }).catch(() => reject('There was an error adding block to the blockchain.'));
     }
 
     /**
@@ -118,13 +120,15 @@ class Blockchain {
             let messageTime = parseInt(message.split(':')[1]);
             let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
 
-            if ((messageTime + (5*60*1000)) < currentTime){
+            if ((currentTime - messageTime) > 300){
                 reject('Star needs to be submitted within 5 minutes');
+                return;
             }
              
             let isValid = bitcoinMessage.verify(message, address, signature)
             if (!isValid){
                 reject('Signature not valid');
+                return;
             }
 
             let newBlock = new BlockClass.Block({star: star, owner: address});
@@ -206,7 +210,7 @@ class Blockchain {
                 promises.push(block.validate());
                 if(block.height > 0) {
                     let previousBlockHash = block.previousBlockHash;
-                    let blockHash = chain[i-1].hash;
+                    let blockHash = self.chain[i-1].hash;
                     if(blockHash != previousBlockHash){
                         errorLog.push(`Previous hash does NOT match, block height= ${block.height}.`);
                     }

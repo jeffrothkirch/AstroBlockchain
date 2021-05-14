@@ -46,6 +46,7 @@ class Block {
             // Returning the Block is not valid
             self.hash = null;
             let newHash = SHA256(JSON.stringify(self)).toString();
+            self.hash  = newHash;
 
             if (oldHash == newHash) {
                 resolve(true);
@@ -53,9 +54,6 @@ class Block {
             else {
                reject(false);
             }
-            
-            // Returning the Block is valid
-
         });
     }
 
@@ -83,7 +81,6 @@ class Block {
 
         return null;
     }
-
 }
 
 module.exports.Block = Block;                    // Exposing the Block class as a module
